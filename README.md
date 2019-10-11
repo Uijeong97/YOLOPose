@@ -24,6 +24,7 @@ Tensorflow : 2.0.0
 - [x] Train COCO Human data
 - [x] Make scoring pose algorithm
 - [x] Test YOLOv3 with EfficientNet
+- [x] Email to Stanford Univ Student to get dataset
 
 ### Reference
 

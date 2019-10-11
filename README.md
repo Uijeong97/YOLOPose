@@ -24,3 +24,9 @@ Tensorflow : 2.0.0
 - [x] Train COCO Human data
 - [x] Make scoring pose algorithm
 - [x] Test YOLOv3 with EfficientNet
+
+### Reference
+
+- https://github.com/zzh8829/yolov3-tf2
+
+- https://github.com/ZackPashkin/YOLOv3-EfficientNet-EffYolo

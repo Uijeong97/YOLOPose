@@ -2,9 +2,6 @@
 
 ﻿## Dongguk Univ BigData Farm
 
-### 프로젝트 명
-**Home Gym with YOLOPose**
-
 ### 팀원
 
 - 김성진

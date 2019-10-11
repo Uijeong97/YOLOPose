@@ -11,3 +11,8 @@
 - 정의정
 
 - 채진영
+
+### Version
+
+- python : 3.7
+- Tensorflow : 2.0.0

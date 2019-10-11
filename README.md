@@ -29,6 +29,17 @@ Pandas : 0.25.0
 - [x] Test YOLOv3 with EfficientNet
 - [x] Email to Stanford Univ Student to get dataset
 
+### Weigths Download
+The pretrained pose weights file can be downloaded [here](https://drive.google.com/open?id=1mBKWp90YHH-3pzIWzSWKovGqdzKOtNuj). Place this weights file under directory `./data/pose_weights/`
+
+### Running Demo
+```
+python Pose_estimates.py
+```
+result:
+
+![](https://github.com/comojin1994/YOLOPose/blob/master/Pose_estimate/detection_result.jpg?raw=true)
+
 ### Reference
 
 - https://github.com/zzh8829/yolov3-tf2

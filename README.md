@@ -21,6 +21,6 @@ Tensorflow : 2.0.0
 
 ### Todo
 
-[] Train COCO Human data
-[] Make scoring pose algorithm
-[] Test YOLOv3 with EfficientNet
+- [x] Train COCO Human data
+- [x] Make scoring pose algorithm
+- [x] Test YOLOv3 with EfficientNet

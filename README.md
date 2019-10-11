@@ -14,5 +14,13 @@
 
 ### Version
 
-- python : 3.7
-- Tensorflow : 2.0.0
+```
+python : 3.7
+Tensorflow : 2.0.0
+```
+
+### Todo
+
+[] Train COCO Human data
+[] Make scoring pose algorithm
+[] Test YOLOv3 with EfficientNet

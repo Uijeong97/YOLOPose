@@ -65,3 +65,5 @@ __pycache__/
 *.data-00000-of-00001
 *.index
 *.meta
+train.txt
+val.txt

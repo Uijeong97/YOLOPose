@@ -67,3 +67,4 @@ __pycache__/
 *.meta
 train.txt
 val.txt
+*.DESKTOP-C2KETMM

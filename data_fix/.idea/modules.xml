@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/yolov3-tf2-effi.iml" filepath="$PROJECT_DIR$/.idea/yolov3-tf2-effi.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/data_fix.iml" filepath="$PROJECT_DIR$/.idea/data_fix.iml" />
     </modules>
   </component>
 </project>

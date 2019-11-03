@@ -13,7 +13,7 @@ from utils.nms_utils import gpu_nms
 from utils.plot_utils import get_color_table
 from utils.plot_utils import plot_one_box
 from utils.data_aug import letterbox_resize
-from utils.pose_ftns import draw_body
+from utils.pose_ftns import draw_body, get_people_pose
 
 from model import yolov3
 
@@ -73,7 +73,7 @@ with tf.Session() as sess:
             img = img[np.newaxis, :] / 255.
 
             boxes_, scores_, labels_ = sess.run([boxes, scores, labels], feed_dict={input_data: img})
-
+            
             # rescale the coordinates to the original image
             if args.letterbox_resize:
                 boxes_[:, [0, 2]] = (boxes_[:, [0, 2]] - dw) / resize_ratio
@@ -81,15 +81,32 @@ with tf.Session() as sess:
             else:
                 boxes_[:, [0, 2]] *= (width_ori/float(args.new_size[0]))
                 boxes_[:, [1, 3]] *= (height_ori/float(args.new_size[1]))
-
+            
+            people_pose=get_people_pose(boxes_, labels_) # list-dict
+            
+            # normalize()
+            # check_speed()
+            # check_wrist()
+        
+            # check critical point
+            '''
+            if i%T == CT
+                check_knee()  
+            '''
+            print(img_root)
             # draw body
-            img_ori = draw_body(img_root, boxes_, labels_)
-
+            img_ori = draw_body(img_ori, people_pose)
+            
             # draw yolo box
-            for i in range(len(boxes_)):
-                 x0, y0, x1, y1 = boxes_[i]
-                 plot_one_box(img_ori, [x0, y0, x1, y1], label=args.classes[labels_[i]] + ', {:.2f}%'.format(scores_[i] * 100), color=color_table[labels_[i]])
-
+            #for i in range(len(boxes_)):
             cv2.imshow('Detection result', img_ori)
             cv2.imwrite('detection_result.jpg', img_ori)
             cv2.waitKey(0)
+                    '''
+            print("rk"+args.classes[labels_[9]]+"\n")
+            print("lk"+args.classes[labels_[12]])
+            rkx0, rky0, rkx1, rky1 = boxes_[9]
+            lkx0, lky0, lkx1, lky1 = boxes_[12]
+            plot_one_box(img_ori, [rkx0, rky0, rkx1, rky1], label=args.classes[labels_[9]] + ', {:.2f}%'.format(scores_[9] * 100), color=color_table[labels_[9]])
+            plot_one_box(img_ori, [lkx0, lky0, lkx1, lky1], label=args.classes[labels_[12]] + ', {:.2f}%'.format(scores_[12] * 100), color=color_table[labels_[12]])
+            '''

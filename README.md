@@ -16,7 +16,7 @@
 
 ```
 Python : 3.7
-Tensorflow : 2.0.0
+Tensorflow : 1.8.0
 Opencv : 3.4.2
 Pillow : 6.1.0
 Pandas : 0.25.0

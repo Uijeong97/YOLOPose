@@ -4,6 +4,15 @@ import cv2
 
 from PIL import Image, ImageDraw
 
+def isStart(people_pose, trainer_pose):
+    # if people_pose
+    mse = ((people_pose - trainer_pose)**2).mean(axis = 0)
+    
+    if mse > 100:
+        return 0
+    else:
+        return 1
+        
     
 def get_people_pose(boxes, labels):
     labels = np.reshape(labels, (len(labels), 1))
@@ -23,10 +32,13 @@ def get_people_pose(boxes, labels):
         body_li = body_li[body_li[:, 1] > people_li[i, 1] + bound]
         body_li = body_li[body_li[:, 0] < people_li[i, 2] - bound]
         body_li = body_li[body_li[:, 1] < people_li[i, 3] - bound]
-
+        
         for j in range(len(body_li)):
             if body_li[j,2] not in list(pose_dict.keys()):
                 pose_dict[int(body_li[j,2])] = (int(body_li[j,0]), int(body_li[j,1]))
+        l_li=[i for i in range(18) if i not in list(pose_dict.keys())]
+        for l_item in l_li:
+            pose_dict[l_item] = (0,0)
         people_body_li.append(pose_dict)
         
     return people_body_li
@@ -142,11 +154,10 @@ def draw_body(img_root, people_pose):
         #     if k in ankle_li:
         #         r = 2
         #         draw.ellipse((pose_dict[k][0] - r, pose_dict[k][1] - r, pose_dict[k][0] + r, pose_dict[k][1] + r), fill=(255,0,0,0))
-    print(len(people_pose))
+    
     for pose_dict in people_pose:
-        print(pose_dict)
         img = line_body(img, pose_dict)
-
+        
     # img = cv2.cvtColor(np.array(img), cv2.COLOR_RGB2BGR)
     img = np.array(img)
 

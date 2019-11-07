@@ -6,6 +6,7 @@ import tensorflow.compat.v1 as tf
 import numpy as np
 import pandas as pd
 import argparse
+import time
 import cv2
 import os
 
@@ -13,9 +14,11 @@ from utils.misc_utils import parse_anchors, read_class_names
 from utils.nms_utils import gpu_nms
 from utils.plot_utils import get_color_table
 from utils.plot_utils import plot_one_box
-from utils.data_aug import letterbox_resize
-from utils.pose_ftns import draw_body, get_people_pose
-
+from utils.data_aug import letterbox_resize, makeMypose_df
+from utils.pose_ftns import draw_body, get_people_pose, isStart
+from algo.posture_dist import check_waist, check_knee, feedback_waist
+from algo.speed_dist import check_speed
+from sklearn.decomposition import PCA
 from model import yolov3
 
 parser = argparse.ArgumentParser(description="YOLO-V3 video test procedure.")
@@ -46,8 +49,24 @@ video_frame_cnt = int(vid.get(7))
 video_width = int(vid.get(3))
 video_height = int(vid.get(4))
 video_fps = int(vid.get(5))
-list_p = np.array([])
+
+trainer_pose = pd.read_csv('./data/output_right.csv', header=None)
+trainer_pose = trainer_pose.loc[:,[0,1,2,3,4,17,18,19,20,21,22,23,24,25,26,27,28]]
+pca_df = trainer_pose.loc[:,[1,2,3,4,17,18,19,20,21,22,23,24,25,26,27,28]]
+pca_df = pca_df.replace(0, np.nan)
+pca_df = pca_df.dropna()
+pca_df.describe()
+pca = PCA(n_components=2)
+pca.fit(pca_df)
+
+list_p = []
 waist_err = 0
+critical_point=0
+past_idx = 0
+startTrig = 0
+cntdown = 90
+t = 0
+TRLEN = len(trainer_pose)
 
 if args.save_video:
     fourcc = cv2.VideoWriter_fourcc('m', 'p', '4', 'v')
@@ -77,7 +96,7 @@ with tf.Session() as sess:
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         img = np.asarray(img, np.float32)
         img = img[np.newaxis, :] / 255.
-
+        
         start_time = time.time()
         boxes_, scores_, labels_ = sess.run([boxes, scores, labels], feed_dict={input_data: img})
         end_time = time.time()
@@ -89,33 +108,59 @@ with tf.Session() as sess:
         else:
             boxes_[:, [0, 2]] *= (width_ori/float(args.new_size[0]))
             boxes_[:, [1, 3]] *= (height_ori/float(args.new_size[1]))
+        
+        people_pose = get_people_pose(boxes_, labels_) # list-dict
+        people_pose = np.array([p for p in people_pose[0].values()]).flatten() # dict-tuple -> list
+        people_pose = people_pose[[0,1,2,3,16,17,18,19,20,21,22,23,24,25,26,27]]
+        
+        # Start Trigger
+        if startTrig == 2:
+            pass
+        elif startTrig == 0:    # start
+            startTrig = isStart(people_pose, trainer_pose.iloc[0,1:].values)
+            cv2.imshow('image', img_ori)
+            if cv2.waitKey(1) & 0xFF == ord('q'):
+                break
+            continue
+        elif startTrig == 1:
+            cv2.putText(img_ori, str(int(cntdown/30)), (100,300), cv2.FONT_HERSHEY_SIMPLEX, 10, (255,0,0), 10)
+            cv2.imshow('image', img_ori)
+            cntdown -= 1
+            if cntdown == 0:
+                startTrig = 2
+            if cv2.waitKey(1) & 0xFF == ord('q'):
+                break
+            continue
+        
+        list_p.append(people_pose)
 
-        people_pose=get_people_pose(boxes_, labels_) # list-dict
-        
-        l=np.array([p for p in a.values()]).flatten() # dict-tuple -> list
-        list_p.append(l)
-        
-        if check_waist(people_pose[0]):
+        if check_waist(people_pose):
             waist_err += 1
         
         if waist_err is 60: # waist_err는 60번 틀리면 피드백함
             feedback_waist()
             waist_err=0
         
-        if i%30 is T: #T는 특정 시점이고 30frame마다 반복됨
-            df=pd.DataFrame(data=np.array(list_p), columns=[neck_x,neck_y]) # columns은 아직 미정
-            check_speed(df)
-            check_knee(people_pose[0])
-            list_p.empty()
+        if trainer_pose.iloc[t, 0] == 1: # t는 특정 시점 + i frame
+            critical_point+=1
+            if critical_point%2 == 0:
+                my_pose = makeMypose_df(list_p)
+#                 check_speed(my_pose, trainer_pose.iloc[[past_idx, t],1:], pca)
+                check_knee(people_pose)
+                list_p = []
+                past_idx = t
+        t += 1
+        if t == TRLEN:
+            break
         
-        img_ori = draw_body(img_ori, boxes_, labels_)
+#         img_ori = draw_body(img_ori, boxes_, labels_)
 
-        # for i in range(len(boxes_)):
-        #     x0, y0, x1, y1 = boxes_[i]
-        #     plot_one_box(img_ori, [x0, y0, x1, y1], label=args.classes[labels_[i]] + ', {:.2f}%'.format(scores_[i] * 100), color=color_table[labels_[i]])
+#         for i in range(len(boxes_)):
+#             x0, y0, x1, y1 = boxes_[i]
+#             plot_one_box(img_ori, [x0, y0, x1, y1], label=args.classes[labels_[i]] + ', {:.2f}%'.format(scores_[i] * 100), color=color_table[labels_[i]])
 
-        # cv2.putText(img_ori, '{:.2f}ms'.format((end_time - start_time) * 1000), (40, 40), 0,
-        #             fontScale=1, color=(0, 255, 0), thickness=2)
+        cv2.putText(img_ori, '{:.2f}ms'.format((end_time - start_time) * 1000), (40, 40), 0,
+                    fontScale=1, color=(0, 255, 0), thickness=2)
         
         cv2.imshow('image', img_ori)
         if args.save_video:

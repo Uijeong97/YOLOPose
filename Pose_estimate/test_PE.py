@@ -2,8 +2,9 @@
 
 from __future__ import division, print_function
 
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 import numpy as np
+import pandas as pd
 import argparse
 import cv2
 import os
@@ -16,6 +17,7 @@ from utils.data_aug import letterbox_resize
 from utils.pose_ftns import draw_body, get_people_pose
 
 from model import yolov3
+
 
 parser = argparse.ArgumentParser(description="YOLO-V3 test single image test procedure.")
 parser.add_argument("--image_dir", type=str, default=r"./data/demo",
@@ -37,6 +39,10 @@ args.classes = read_class_names(args.class_name_path)
 args.num_class = len(args.classes)
 
 color_table = get_color_table(args.num_class)
+
+f_queue_ps=queue.Queue() # Queue for saving frames per 1 sec
+
+T=30
 
 with tf.Session() as sess:
     input_data = tf.placeholder(tf.float32, [1, args.new_size[1], args.new_size[0], 3], name='input_data')
@@ -82,31 +88,37 @@ with tf.Session() as sess:
                 boxes_[:, [0, 2]] *= (width_ori/float(args.new_size[0]))
                 boxes_[:, [1, 3]] *= (height_ori/float(args.new_size[1]))
             
+
             people_pose=get_people_pose(boxes_, labels_) # list-dict
+            
+            list_p=[]
+            
+            # dict-tuple -> list
+            l=np.array([p for p in a.values()]).flatten()
+            list_p.append(l)
+            df=pd.DataFrame(data=np.array(list_p), columns=[]) # 30개마다
+                
+            check_speed(f_queue_ps) if f_queue_ps.qsize() is T
             
             # normalize()
             # check_speed()
-            # check_wrist()
-        
+            # check_heap()
+       
             # check critical point
             '''
             if i%T == CT
-                check_knee()  
+                check_knee(people_pose[0])  
             '''
-            print(img_root)
+            
             # draw body
             img_ori = draw_body(img_ori, people_pose)
             
             # draw yolo box
-            #for i in range(len(boxes_)):
+            # draw yolo box
+            for i in range(len(boxes_)):
+                 x0, y0, x1, y1 = boxes_[i]
+                 plot_one_box(img_ori, [x0, y0, x1, y1], label=args.classes[labels_[i]] + ', {:.2f}%'.format(scores_[i] * 100), color=color_table[labels_[i]])
+                
             cv2.imshow('Detection result', img_ori)
-            cv2.imwrite('detection_result.jpg', img_ori)
+#             cv2.imwrite('detection_result.jpg', img_ori)
             cv2.waitKey(0)
-                    '''
-            print("rk"+args.classes[labels_[9]]+"\n")
-            print("lk"+args.classes[labels_[12]])
-            rkx0, rky0, rkx1, rky1 = boxes_[9]
-            lkx0, lky0, lkx1, lky1 = boxes_[12]
-            plot_one_box(img_ori, [rkx0, rky0, rkx1, rky1], label=args.classes[labels_[9]] + ', {:.2f}%'.format(scores_[9] * 100), color=color_table[labels_[9]])
-            plot_one_box(img_ori, [lkx0, lky0, lkx1, lky1], label=args.classes[labels_[12]] + ', {:.2f}%'.format(scores_[12] * 100), color=color_table[labels_[12]])
-            '''

@@ -68,3 +68,6 @@ __pycache__/
 train.txt
 val.txt
 *.DESKTOP-C2KETMM
+
+# jupyter notebook
+*.ipynb_checkpoints

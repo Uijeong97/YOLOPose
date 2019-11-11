@@ -25,3 +25,19 @@ def feedback_waist():
     
 def feedback_knee():
     print("다리를 수직으로 맞춰주세요")
+
+def check_ankle(past_ankle, cur_ankle, trainer_ankle):
+    threshold = 20
+    if len(past_ankle) == 0:
+        past_ankle = trainer_ankle
+        diff = list(map(lambda x,y: abs(x-y), past_ankle, cur_ankle))
+    else:
+        past_ankle = past_ankle[-1]
+        diff = list(map(lambda x,y: abs(x-y), past_ankle, cur_ankle))
+    for i in range(len(diff)):
+        if diff[i] > threshold:
+            cur_ankle[i] = past_ankle[i]
+    # diff = list(map(lambda x, y: abs(x - y), past_ankle, cur_ankle))
+    # print(max(diff))
+
+    return cur_ankle

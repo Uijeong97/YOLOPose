@@ -162,3 +162,21 @@ def draw_body(img_root, people_pose):
     img = np.array(img)
 
     return img
+
+def draw_ground_truth(img_ori, trainer_pose):
+    img = Image.fromarray(img_ori)
+    draw = ImageDraw.Draw(img)
+    line_color = (145, 56, 40)
+    w = 5
+
+    draw.line((trainer_pose[0], trainer_pose[1], trainer_pose[2], trainer_pose[3]), fill=line_color, width=w)
+    draw.line((trainer_pose[2], trainer_pose[3], trainer_pose[4], trainer_pose[5]), fill=line_color, width=w)
+    draw.line((trainer_pose[4], trainer_pose[5], trainer_pose[6], trainer_pose[7]), fill=line_color, width=w)
+    draw.line((trainer_pose[6], trainer_pose[7], trainer_pose[8], trainer_pose[9]), fill=line_color, width=w)
+    draw.line((trainer_pose[2], trainer_pose[3], trainer_pose[10], trainer_pose[11]), fill=line_color, width=w)
+    draw.line((trainer_pose[10], trainer_pose[11], trainer_pose[12], trainer_pose[13]), fill=line_color, width=w)
+    draw.line((trainer_pose[12], trainer_pose[13], trainer_pose[14], trainer_pose[15]), fill=line_color, width=w)
+
+    img = np.array(img)
+
+    return img

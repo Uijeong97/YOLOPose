@@ -2,7 +2,7 @@
 
 from __future__ import division, print_function
 
-import tensorflow.compat.v1 as tf
+import tensorflow as tf
 import numpy as np
 import pandas as pd
 import argparse
@@ -15,8 +15,8 @@ from utils.nms_utils import gpu_nms
 from utils.plot_utils import get_color_table
 from utils.plot_utils import plot_one_box
 from utils.data_aug import letterbox_resize, makeMypose_df
-from utils.pose_ftns import draw_body, get_people_pose, isStart
-from algo.posture_dist import check_waist, check_knee, feedback_waist
+from utils.pose_ftns import draw_body, get_people_pose, isStart, draw_ground_truth
+from algo.posture_dist import check_waist, check_knee, feedback_waist, check_ankle
 from algo.speed_dist import check_speed
 from sklearn.decomposition import PCA
 from model import yolov3
@@ -50,7 +50,7 @@ video_width = int(vid.get(3))
 video_height = int(vid.get(4))
 video_fps = int(vid.get(5))
 
-trainer_pose = pd.read_csv('./data/output_right.csv', header=None)
+trainer_pose = pd.read_csv('./data/ground_truth/output_right.csv', header=None)
 trainer_pose = trainer_pose.loc[:,[0,1,2,3,4,17,18,19,20,21,22,23,24,25,26,27,28]]
 pca_df = trainer_pose.loc[:,[1,2,3,4,17,18,19,20,21,22,23,24,25,26,27,28]]
 pca_df = pca_df.replace(0, np.nan)
@@ -117,12 +117,14 @@ with tf.Session() as sess:
         if startTrig == 2:
             pass
         elif startTrig == 0:    # start
+            img_ori = draw_ground_truth(img_ori, pca_df.iloc[0, :].values)
             startTrig = isStart(people_pose, trainer_pose.iloc[0,1:].values)
             cv2.imshow('image', img_ori)
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
             continue
         elif startTrig == 1:
+            img_ori = draw_ground_truth(img_ori, pca_df.iloc[0, :].values)
             cv2.putText(img_ori, str(int(cntdown/30)), (100,300), cv2.FONT_HERSHEY_SIMPLEX, 10, (255,0,0), 10)
             cv2.imshow('image', img_ori)
             cntdown -= 1
@@ -131,7 +133,13 @@ with tf.Session() as sess:
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
             continue
-        
+
+        # ground truth 그리기
+        img_ori = draw_ground_truth(img_ori, pca_df.iloc[t,:].values)
+
+        '''check ankle : 편차 40이상 발생시 전에 값 으로 업데이트'''
+        people_pose = check_ankle(list_p,people_pose,pca_df.iloc[t,:].values)
+
         list_p.append(people_pose)
 
         if check_waist(people_pose):
@@ -145,7 +153,7 @@ with tf.Session() as sess:
             critical_point+=1
             if critical_point%2 == 0:
                 my_pose = makeMypose_df(list_p)
-#                 check_speed(my_pose, trainer_pose.iloc[[past_idx, t],1:], pca)
+                check_speed(my_pose, trainer_pose.iloc[[past_idx, t],1:], pca)
                 check_knee(people_pose)
                 list_p = []
                 past_idx = t

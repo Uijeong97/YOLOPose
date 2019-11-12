@@ -9,6 +9,7 @@ import argparse
 import time
 import cv2
 import os
+import csv
 
 from utils.misc_utils import parse_anchors, read_class_names
 from utils.nms_utils import gpu_nms
@@ -56,7 +57,7 @@ pca_df = trainer_pose.loc[:,[1,2,3,4,17,18,19,20,21,22,23,24,25,26,27,28]]
 pca_df = pca_df.replace(0, np.nan)
 pca_df = pca_df.dropna()
 pca_df.describe()
-pca = PCA(n_components=2)
+pca = PCA(n_components=1)
 pca.fit(pca_df)
 
 list_p = []
@@ -142,6 +143,10 @@ with tf.Session() as sess:
         '''check ankle : 편차 40이상 발생시 전에 값 으로 업데이트'''
         people_pose = check_ankle(list_p,people_pose, modify_ankle)
 
+        # f = open('user.csv', 'a', encoding='utf-8', newline='')
+        # wr = csv.writer(f)
+        # wr.writerow(people_pose)
+
         list_p.append(people_pose)
 
         if check_waist(people_pose):
@@ -155,7 +160,7 @@ with tf.Session() as sess:
             critical_point+=1
             if critical_point%2 == 0:
                 my_pose = makeMypose_df(list_p)
-                # check_speed(my_pose, trainer_pose.iloc[[past_idx, t],1:], pca)
+                check_speed(my_pose, trainer_pose.iloc[past_idx: t+1,1:], pca)
                 check_knee(people_pose)
                 modify_ankle = list_p[-1]
                 list_p = []

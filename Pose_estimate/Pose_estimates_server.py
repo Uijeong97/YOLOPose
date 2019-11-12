@@ -23,6 +23,8 @@ from algo.speed_dist import check_speed
 from sklearn.decomposition import PCA
 from model import yolov3
 
+from datetime import datetime
+
 def estimatePose():
     parser = argparse.ArgumentParser(description="YOLO-V3 video test procedure.")
     # parser.add_argument("input_video", type=str,
@@ -208,4 +210,5 @@ def estimatePose():
 
     f = open('./data/score/result.csv', 'a', encoding='utf-8', newline='')
     wr = csv.writer(f)
-    wr.writerow([c_knee, c_waist, c_speed])
+    now = datetime.today().strftime("%Y/%m/%d %H:%M:%S")
+    wr.writerow([now, c_knee, c_waist, c_speed])

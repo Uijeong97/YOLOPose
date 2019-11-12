@@ -12,8 +12,8 @@ import cv2
 
 def makeMypose_df(list_p):
     df = pd.DataFrame(data=np.array(list_p))
-    df = df.loc[:,[1,2,3,4,17,18,19,20,21,22,23,24,25,26,27,28]]
-    df = df.replace(0,np.nan).fillna(method = "ffill")
+    # df = df.loc[:,[1,2,3,4,17,18,19,20,21,22,23,24,25,26,27,28]]
+    # df = df.replace(0,np.nan).fillna(method = "ffill")
     return df
 
 def mix_up(img1, img2, bbox1, bbox2):

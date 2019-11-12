@@ -4,7 +4,7 @@ def check_waist(people_pose):
 
     MHeap = ((RHeap[0]+LHeap[0])/2, (RHeap[1]+LHeap[1])/2)
     
-    if MHeap[0]!=Neck[0]:
+    if abs(MHeap[0] - Neck[0]) >= 21.5:
         return True
     else:
         return False
@@ -14,10 +14,10 @@ def check_knee(people_pose):
     LKnee,LAnkle = people_pose[12:14],people_pose[14:]
     
     # compare x point
-    ChKnee = RKnee if RKnee[0]<LKnee[0] else LKnee
-    ChAnkle = RAnkle if RAnkle[0]<LAnkle[0] else LAnkle
+    ChKnee = RKnee if RKnee[0]>LKnee[0] else LKnee
+    ChAnkle = RAnkle if RAnkle[0]>LAnkle[0] else LAnkle
     
-    if ChKnee[0] < ChAnkle[0]: 
+    if ChKnee[0] - ChAnkle[0] > 2:
         feedback_knee()
     
 def feedback_waist():
@@ -25,3 +25,19 @@ def feedback_waist():
     
 def feedback_knee():
     print("다리를 수직으로 맞춰주세요")
+
+def check_ankle(past_ankle, cur_ankle, trainer_ankle):
+    threshold = 20
+    if len(past_ankle) == 0:
+        past_ankle = trainer_ankle
+        diff = list(map(lambda x,y: abs(x-y), past_ankle, cur_ankle))
+    else:
+        past_ankle = past_ankle[-1]
+        diff = list(map(lambda x,y: abs(x-y), past_ankle, cur_ankle))
+    for i in range(len(diff)):
+        if diff[i] > threshold:
+            cur_ankle[i] = past_ankle[i]
+    # diff = list(map(lambda x, y: abs(x - y), past_ankle, cur_ankle))
+    # print(max(diff))
+
+    return cur_ankle

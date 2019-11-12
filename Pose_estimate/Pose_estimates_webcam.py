@@ -2,21 +2,22 @@
 
 from __future__ import division, print_function
 
-import tensorflow.compat.v1 as tf
+import tensorflow as tf
 import numpy as np
 import pandas as pd
 import argparse
 import time
 import cv2
 import os
+import csv
 
 from utils.misc_utils import parse_anchors, read_class_names
 from utils.nms_utils import gpu_nms
 from utils.plot_utils import get_color_table
 from utils.plot_utils import plot_one_box
 from utils.data_aug import letterbox_resize, makeMypose_df
-from utils.pose_ftns import draw_body, get_people_pose, isStart
-from algo.posture_dist import check_waist, check_knee, feedback_waist
+from utils.pose_ftns import draw_body, get_people_pose, isStart, draw_ground_truth, draw_truth
+from algo.posture_dist import check_waist, check_knee, feedback_waist, check_ankle
 from algo.speed_dist import check_speed
 from sklearn.decomposition import PCA
 from model import yolov3
@@ -32,7 +33,7 @@ parser.add_argument("--letterbox_resize", type=lambda x: (str(x).lower() == 'tru
                     help="Whether to use the letterbox resize.")
 parser.add_argument("--class_name_path", type=str, default="./data/my_data/YOLOPose.names",
                     help="The path of the class names.")
-parser.add_argument("--restore_path", type=str, default="./data/pose_weights/pose_best",
+parser.add_argument("--restore_path", type=str, default="./data/pose_weights/lunge_best",
                     help="The path of the weights to restore.")
 parser.add_argument("--save_video", type=lambda x: (str(x).lower() == 'true'), default=True,
                     help="Whether to save the video detection results.")
@@ -50,13 +51,13 @@ video_width = int(vid.get(3))
 video_height = int(vid.get(4))
 video_fps = int(vid.get(5))
 
-trainer_pose = pd.read_csv('./data/output_right.csv', header=None)
+trainer_pose = pd.read_csv('./data/ground_truth/output_right.csv', header=None)
 trainer_pose = trainer_pose.loc[:,[0,1,2,3,4,17,18,19,20,21,22,23,24,25,26,27,28]]
 pca_df = trainer_pose.loc[:,[1,2,3,4,17,18,19,20,21,22,23,24,25,26,27,28]]
 pca_df = pca_df.replace(0, np.nan)
 pca_df = pca_df.dropna()
 pca_df.describe()
-pca = PCA(n_components=2)
+pca = PCA(n_components=1)
 pca.fit(pca_df)
 
 list_p = []
@@ -67,6 +68,7 @@ startTrig = 0
 cntdown = 90
 t = 0
 TRLEN = len(trainer_pose)
+modify_ankle = pca_df.iloc[0,:].values
 
 if args.save_video:
     fourcc = cv2.VideoWriter_fourcc('m', 'p', '4', 'v')
@@ -110,19 +112,22 @@ with tf.Session() as sess:
             boxes_[:, [1, 3]] *= (height_ori/float(args.new_size[1]))
         
         people_pose = get_people_pose(boxes_, labels_) # list-dict
-        people_pose = np.array([p for p in people_pose[0].values()]).flatten() # dict-tuple -> list
+        people_pose = np.array([p[1] for p in people_pose[0]]).flatten() # dict-tuple -> list
         people_pose = people_pose[[0,1,2,3,16,17,18,19,20,21,22,23,24,25,26,27]]
-        
+
+
         # Start Trigger
         if startTrig == 2:
             pass
         elif startTrig == 0:    # start
+            img_ori = draw_ground_truth(img_ori, pca_df.iloc[0, :].values)
             startTrig = isStart(people_pose, trainer_pose.iloc[0,1:].values)
             cv2.imshow('image', img_ori)
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
             continue
         elif startTrig == 1:
+            img_ori = draw_ground_truth(img_ori, pca_df.iloc[0, :].values)
             cv2.putText(img_ori, str(int(cntdown/30)), (100,300), cv2.FONT_HERSHEY_SIMPLEX, 10, (255,0,0), 10)
             cv2.imshow('image', img_ori)
             cntdown -= 1
@@ -131,7 +136,17 @@ with tf.Session() as sess:
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
             continue
-        
+
+        # ground truth 그리기
+        img_ori = draw_ground_truth(img_ori, pca_df.iloc[t,:].values)
+
+        '''check ankle : 편차 40이상 발생시 전에 값 으로 업데이트'''
+        people_pose = check_ankle(list_p,people_pose, modify_ankle)
+
+        # f = open('user.csv', 'a', encoding='utf-8', newline='')
+        # wr = csv.writer(f)
+        # wr.writerow(people_pose)
+
         list_p.append(people_pose)
 
         if check_waist(people_pose):
@@ -145,20 +160,21 @@ with tf.Session() as sess:
             critical_point+=1
             if critical_point%2 == 0:
                 my_pose = makeMypose_df(list_p)
-#                 check_speed(my_pose, trainer_pose.iloc[[past_idx, t],1:], pca)
+                check_speed(my_pose, trainer_pose.iloc[past_idx: t+1,1:], pca)
                 check_knee(people_pose)
+                modify_ankle = list_p[-1]
                 list_p = []
                 past_idx = t
         t += 1
         if t == TRLEN:
             break
-        
-#         img_ori = draw_body(img_ori, boxes_, labels_)
 
-#         for i in range(len(boxes_)):
-#             x0, y0, x1, y1 = boxes_[i]
-#             plot_one_box(img_ori, [x0, y0, x1, y1], label=args.classes[labels_[i]] + ', {:.2f}%'.format(scores_[i] * 100), color=color_table[labels_[i]])
 
+        # img_ori = draw_body(img_ori, boxes_, labels_)
+        # for i in range(len(boxes_)):
+        #     x0, y0, x1, y1 = boxes_[i]
+        #     plot_one_box(img_ori, [x0, y0, x1, y1], label=args.classes[labels_[i]] + ', {:.2f}%'.format(scores_[i] * 100), color=color_table[labels_[i]])
+        img_ori = draw_truth(img_ori, people_pose)
         cv2.putText(img_ori, '{:.2f}ms'.format((end_time - start_time) * 1000), (40, 40), 0,
                     fontScale=1, color=(0, 255, 0), thickness=2)
         

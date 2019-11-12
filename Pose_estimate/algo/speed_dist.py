@@ -3,7 +3,7 @@ import numpy as np
 from sklearn.decomposition import PCA
 from statsmodels.stats.weightstats import ttest_ind, ztest
 
-def check_speed(my_pose, tr_pose, pca):
+def check_speed(my_pose, tr_pose, pca, c_speed):
     # trainer pose vs my pose 분포 비교
     my_pose = my_pose.values
     tr_pose = tr_pose.values
@@ -14,7 +14,8 @@ def check_speed(my_pose, tr_pose, pca):
     val = np.sqrt(diff.sum(axis=0))
     if val > 100:
         feedback_speed()
-
+        c_speed += 1
+    return c_speed
 
     # v = ttest_ind(tr_dist, my_dist, usevar='unequal')[1]
     # v = ztest(tr_dist, my_dist)

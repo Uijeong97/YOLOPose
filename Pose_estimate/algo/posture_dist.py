@@ -9,7 +9,7 @@ def check_waist(people_pose):
     else:
         return False
         
-def check_knee(people_pose):
+def check_knee(people_pose, c_knee):
     RKnee,RAnkle = people_pose[6:8],people_pose[8:10]
     LKnee,LAnkle = people_pose[12:14],people_pose[14:]
     
@@ -18,8 +18,10 @@ def check_knee(people_pose):
     ChAnkle = RAnkle if RAnkle[0]>LAnkle[0] else LAnkle
     
     if ChKnee[0] - ChAnkle[0] > 2:
+        c_knee += 1
         feedback_knee()
-    
+    return c_knee
+
 def feedback_waist():
     print("허리와 엉덩이를 일직선으로 맞춰주세요")
     

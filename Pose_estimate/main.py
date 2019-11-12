@@ -1,10 +1,8 @@
-import numpy
 from pygame import mixer
-import time
-import cv2
 from tkinter import*
 import tkinter.messagebox
-from Pose_estimates_webcam import estimatePose
+from Pose_estimates_server import estimatePose
+import tensorflow as tf
 
 root = Tk()
 root.geometry('512x512')

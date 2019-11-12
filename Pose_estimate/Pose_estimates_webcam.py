@@ -23,8 +23,8 @@ from sklearn.decomposition import PCA
 from model import yolov3
 
 parser = argparse.ArgumentParser(description="YOLO-V3 video test procedure.")
-parser.add_argument("input_video", type=str,
-                    help="The path of the input video.")
+# parser.add_argument("input_video", type=str,
+#                     help="The path of the input video.")
 parser.add_argument("--anchor_path", type=str, default="./data/yolo_anchors.txt",
                     help="The path of the anchor txt file.")
 parser.add_argument("--new_size", nargs='*', type=int, default=[416, 416],
@@ -45,7 +45,8 @@ args.num_class = len(args.classes)
 
 color_table = get_color_table(args.num_class)
 
-vid = cv2.VideoCapture(args.input_video)
+# vid = cv2.VideoCapture(args.input_video)
+vid = cv2.VideoCapture('./data/demo/lunge_02.mp4')
 video_frame_cnt = int(vid.get(7))
 video_width = int(vid.get(3))
 video_height = int(vid.get(4))

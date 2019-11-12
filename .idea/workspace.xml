@@ -2,11 +2,13 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="34eb1b2a-fe8e-4235-bd35-f5c40842f32d" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/Pose_estimate/Pose_estimates_server.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Pose_estimate/Pose_estimates_webcam.py" beforeDir="false" afterPath="$PROJECT_DIR$/Pose_estimate/Pose_estimates_webcam.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Pose_estimate/algo/posture_dist.py" beforeDir="false" afterPath="$PROJECT_DIR$/Pose_estimate/algo/posture_dist.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Pose_estimate/algo/speed_dist.py" beforeDir="false" afterPath="$PROJECT_DIR$/Pose_estimate/algo/speed_dist.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Pose_estimate/utils/pose_ftns.py" beforeDir="false" afterPath="$PROJECT_DIR$/Pose_estimate/utils/pose_ftns.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Pose_estimate/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/Pose_estimate/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Pose_estimate/video_result.mp4" beforeDir="false" afterPath="$PROJECT_DIR$/Pose_estimate/video_result.mp4" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -24,35 +26,59 @@
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
-          <entry key="py" value="6" />
+          <entry key="py" value="8" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
-          <entry key="Python" value="6" />
+          <entry key="Python" value="8" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="py" value="3032" />
+          <entry key="py" value="3504" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="Python" value="3032" />
+          <entry key="Python" value="3504" />
         </counts>
       </usages-collector>
     </session>
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Pose_estimate/Pose_estimates_webcam.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="178">
-              <caret line="161" column="26" selection-start-line="161" selection-start-column="26" selection-end-line="161" selection-end-column="26" />
+            <state relative-caret-position="231">
+              <caret line="68" column="13" selection-start-line="68" selection-start-column="13" selection-end-line="68" selection-end-column="13" />
               <folding>
                 <element signature="e#17#64#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/Pose_estimate/Pose_estimates_server.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="773">
+              <caret line="210" column="43" selection-start-line="210" selection-start-column="43" selection-end-line="210" selection-end-column="43" />
+              <folding>
+                <element signature="e#17#64#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Pose_estimate/main.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="378">
+              <caret line="18" column="99" selection-start-line="18" selection-start-column="99" selection-end-line="18" selection-end-column="99" />
+              <folding>
+                <element signature="e#0#24#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -70,8 +96,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Pose_estimate/algo/speed_dist.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="441">
-              <caret line="21" column="20" selection-start-line="21" selection-start-column="20" selection-end-line="21" selection-end-column="20" />
+            <state relative-caret-position="189">
+              <caret line="9" column="23" lean-forward="true" selection-start-line="9" selection-start-column="23" selection-end-line="9" selection-end-column="23" />
               <folding>
                 <element signature="e#0#19#0" expanded="true" />
               </folding>
@@ -82,10 +108,10 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Pose_estimate/algo/posture_dist.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="252">
-              <caret line="18" column="4" selection-start-line="18" selection-start-column="4" selection-end-line="18" selection-end-column="4" />
+            <state relative-caret-position="462">
+              <caret line="22" column="17" selection-start-line="22" selection-start-column="17" selection-end-line="22" selection-end-column="17" />
               <folding>
-                <marker date="1573572058579" expanded="true" signature="815:820" ph="..." />
+                <marker date="1573581505004" expanded="true" signature="857:862" ph="..." />
               </folding>
             </state>
           </provider>
@@ -115,6 +141,13 @@
       </file>
     </leaf>
   </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
@@ -122,10 +155,12 @@
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/Pose_estimate/utils/data_aug.py" />
-        <option value="$PROJECT_DIR$/Pose_estimate/algo/speed_dist.py" />
-        <option value="$PROJECT_DIR$/Pose_estimate/algo/posture_dist.py" />
         <option value="$PROJECT_DIR$/Pose_estimate/utils/pose_ftns.py" />
         <option value="$PROJECT_DIR$/Pose_estimate/Pose_estimates_webcam.py" />
+        <option value="$PROJECT_DIR$/Pose_estimate/main.py" />
+        <option value="$PROJECT_DIR$/Pose_estimate/algo/speed_dist.py" />
+        <option value="$PROJECT_DIR$/Pose_estimate/algo/posture_dist.py" />
+        <option value="$PROJECT_DIR$/Pose_estimate/Pose_estimates_server.py" />
       </list>
     </option>
   </component>
@@ -232,6 +267,26 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/Pose_estimate/main.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="378">
+          <caret line="18" column="99" selection-start-line="18" selection-start-column="99" selection-end-line="18" selection-end-column="99" />
+          <folding>
+            <element signature="e#0#24#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Pose_estimate/Pose_estimates_webcam.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="231">
+          <caret line="68" column="13" selection-start-line="68" selection-start-column="13" selection-end-line="68" selection-end-column="13" />
+          <folding>
+            <element signature="e#17#64#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/Pose_estimate/utils/data_aug.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="672">
@@ -239,20 +294,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Pose_estimate/algo/posture_dist.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="252">
-          <caret line="18" column="4" selection-start-line="18" selection-start-column="4" selection-end-line="18" selection-end-column="4" />
-          <folding>
-            <marker date="1573572058579" expanded="true" signature="815:820" ph="..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Pose_estimate/algo/speed_dist.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="441">
-          <caret line="21" column="20" selection-start-line="21" selection-start-column="20" selection-end-line="21" selection-end-column="20" />
+        <state relative-caret-position="189">
+          <caret line="9" column="23" lean-forward="true" selection-start-line="9" selection-start-column="23" selection-end-line="9" selection-end-column="23" />
           <folding>
             <element signature="e#0#19#0" expanded="true" />
           </folding>
@@ -270,10 +315,20 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Pose_estimate/Pose_estimates_webcam.py">
+    <entry file="file://$PROJECT_DIR$/Pose_estimate/algo/posture_dist.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="178">
-          <caret line="161" column="26" selection-start-line="161" selection-start-column="26" selection-end-line="161" selection-end-column="26" />
+        <state relative-caret-position="462">
+          <caret line="22" column="17" selection-start-line="22" selection-start-column="17" selection-end-line="22" selection-end-column="17" />
+          <folding>
+            <marker date="1573581505004" expanded="true" signature="857:862" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Pose_estimate/Pose_estimates_server.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="773">
+          <caret line="210" column="43" selection-start-line="210" selection-start-column="43" selection-end-line="210" selection-end-column="43" />
           <folding>
             <element signature="e#17#64#0" expanded="true" />
           </folding>

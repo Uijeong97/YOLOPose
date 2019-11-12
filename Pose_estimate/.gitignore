@@ -71,3 +71,4 @@ val.txt
 
 # jupyter notebook
 *.ipynb_checkpoints
+*.mp4

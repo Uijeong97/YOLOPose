@@ -40,10 +40,6 @@ args.num_class = len(args.classes)
 
 color_table = get_color_table(args.num_class)
 
-f_queue_ps=queue.Queue() # Queue for saving frames per 1 sec
-
-T=30
-
 with tf.Session() as sess:
     input_data = tf.placeholder(tf.float32, [1, args.new_size[1], args.new_size[0], 3], name='input_data')
     yolo_model = yolov3(args.num_class, args.anchors)
@@ -90,15 +86,18 @@ with tf.Session() as sess:
             
 
             people_pose=get_people_pose(boxes_, labels_) # list-dict
+            print(people_pose[0])
             
             list_p=[]
             
             # dict-tuple -> list
-            l=np.array([p for p in a.values()]).flatten()
+            l = np.array([p for p in people_pose[0].values()]).flatten()
+            print(l)
             list_p.append(l)
-            df=pd.DataFrame(data=np.array(list_p), columns=[]) # 30개마다
+            print(list_p)
+#             df=pd.DataFrame(data=np.array(list_p), columns=[]) # 30개마다
                 
-            check_speed(f_queue_ps) if f_queue_ps.qsize() is T
+#             check_speed(f_queue_ps) if f_queue_ps.qsize() is T
             
             # normalize()
             # check_speed()
@@ -115,10 +114,10 @@ with tf.Session() as sess:
             
             # draw yolo box
             # draw yolo box
-            for i in range(len(boxes_)):
-                 x0, y0, x1, y1 = boxes_[i]
-                 plot_one_box(img_ori, [x0, y0, x1, y1], label=args.classes[labels_[i]] + ', {:.2f}%'.format(scores_[i] * 100), color=color_table[labels_[i]])
+#             for i in range(len(boxes_)):
+#                  x0, y0, x1, y1 = boxes_[i]
+#                  plot_one_box(img_ori, [x0, y0, x1, y1], label=args.classes[labels_[i]] + ', {:.2f}%'.format(scores_[i] * 100), color=color_table[labels_[i]])
                 
-            cv2.imshow('Detection result', img_ori)
-#             cv2.imwrite('detection_result.jpg', img_ori)
-            cv2.waitKey(0)
+#             cv2.imshow('Detection result', img_ori)
+# #             cv2.imwrite('detection_result.jpg', img_ori)
+#             cv2.waitKey(0)

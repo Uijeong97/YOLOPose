@@ -11,13 +11,12 @@ def check_speed(my_pose, tr_pose, pca):
     tr_dist = pca.fit_transform(tr_pose).flatten()
 
     diff = np.array(list(map(lambda x,y : (x-y)**2, my_dist, tr_dist)))
-    # print("my_dist : %s" % my_dist)
-    # print("tr_dist : %s" % tr_dist)
-    # print(diff)
     val = np.sqrt(diff.sum(axis=0))
     if val > 100:
         feedback_speed()
-    # v = ttest_ind(tr_dist, my_dist)[1]
+
+
+    # v = ttest_ind(tr_dist, my_dist, usevar='unequal')[1]
     # v = ztest(tr_dist, my_dist)
     # print(v, v< 0.05)
 #     if slow : feedback_speed(slow)

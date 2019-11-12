@@ -54,12 +54,16 @@ video_fps = int(vid.get(5))
 trainer_pose = pd.read_csv('./data/ground_truth/output_right.csv', header=None)
 trainer_pose = trainer_pose.loc[:,[0,1,2,3,4,17,18,19,20,21,22,23,24,25,26,27,28]]
 pca_df = trainer_pose.loc[:,[1,2,3,4,17,18,19,20,21,22,23,24,25,26,27,28]]
+pca_df.loc[:, [c for c in pca_df.columns if c % 2 == 1]] = pca_df.loc[:,[c for c in pca_df.columns if c % 2 == 1]] * video_width/416
+pca_df.loc[:, [c for c in pca_df.columns if c % 2 == 0]] = pca_df.loc[:,[c for c in pca_df.columns if c % 2 == 0]] * video_height/416
+pca_df = pca_df.astype(int)
 pca_df = pca_df.replace(0, np.nan)
 pca_df = pca_df.dropna()
 pca_df.describe()
 pca = PCA(n_components=1)
 pca.fit(pca_df)
 
+size = [video_width, video_height]
 list_p = []
 waist_err = 0
 critical_point=0
@@ -69,6 +73,7 @@ cntdown = 90
 t = 0
 TRLEN = len(trainer_pose)
 modify_ankle = pca_df.iloc[0,:].values
+base_rect = [(int(video_width/4), int(video_height/10)), (int(video_width*3/4), int(video_height*19/20))]
 
 if args.save_video:
     fourcc = cv2.VideoWriter_fourcc('m', 'p', '4', 'v')
@@ -101,7 +106,7 @@ with tf.Session() as sess:
         
         start_time = time.time()
         boxes_, scores_, labels_ = sess.run([boxes, scores, labels], feed_dict={input_data: img})
-        end_time = time.time()
+
 
         # rescale the coordinates to the original image
         if args.letterbox_resize:
@@ -110,8 +115,9 @@ with tf.Session() as sess:
         else:
             boxes_[:, [0, 2]] *= (width_ori/float(args.new_size[0]))
             boxes_[:, [1, 3]] *= (height_ori/float(args.new_size[1]))
-        
-        people_pose = get_people_pose(boxes_, labels_) # list-dict
+
+
+        people_pose = get_people_pose(boxes_, labels_, base_rect) # list-dict
         people_pose = np.array([p[1] for p in people_pose[0]]).flatten() # dict-tuple -> list
         people_pose = people_pose[[0,1,2,3,16,17,18,19,20,21,22,23,24,25,26,27]]
 
@@ -120,8 +126,11 @@ with tf.Session() as sess:
         if startTrig == 2:
             pass
         elif startTrig == 0:    # start
+            # 기준 박스
+            cv2.rectangle(img_ori, base_rect[0], base_rect[1], (0, 0, 255), 2)
+
             img_ori = draw_ground_truth(img_ori, pca_df.iloc[0, :].values)
-            startTrig = isStart(people_pose, trainer_pose.iloc[0,1:].values)
+            startTrig = isStart(people_pose, trainer_pose.iloc[0,1:].values, size)
             cv2.imshow('image', img_ori)
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
@@ -141,7 +150,7 @@ with tf.Session() as sess:
         img_ori = draw_ground_truth(img_ori, pca_df.iloc[t,:].values)
 
         '''check ankle : 편차 40이상 발생시 전에 값 으로 업데이트'''
-        people_pose = check_ankle(list_p,people_pose, modify_ankle)
+        people_pose = check_ankle(list_p,people_pose, modify_ankle, size)
 
         # f = open('user.csv', 'a', encoding='utf-8', newline='')
         # wr = csv.writer(f)
@@ -174,7 +183,11 @@ with tf.Session() as sess:
         # for i in range(len(boxes_)):
         #     x0, y0, x1, y1 = boxes_[i]
         #     plot_one_box(img_ori, [x0, y0, x1, y1], label=args.classes[labels_[i]] + ', {:.2f}%'.format(scores_[i] * 100), color=color_table[labels_[i]])
-        img_ori = draw_truth(img_ori, people_pose)
+
+        # 사용자 자세 그리기
+        # img_ori = draw_truth(img_ori, people_pose)
+
+        end_time = time.time()
         cv2.putText(img_ori, '{:.2f}ms'.format((end_time - start_time) * 1000), (40, 40), 0,
                     fontScale=1, color=(0, 255, 0), thickness=2)
         

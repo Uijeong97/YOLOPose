@@ -4,20 +4,21 @@ import cv2
 
 from PIL import Image, ImageDraw
 
-def isStart(people_pose, trainer_pose):
+def isStart(people_pose, trainer_pose, size):
     # if people_pose
     mse = ((people_pose - trainer_pose)**2).mean(axis = 0)
-    
-    if mse > 100:
+    mse = np.sqrt(mse)
+
+    t = min(size)/40
+    if mse > t:
         return 0
     else:
         return 1
         
     
-def get_people_pose(boxes, labels):
+def get_people_pose(boxes, labels, base_rect):
     labels = np.reshape(labels, (len(labels), 1))
     data = np.concatenate((boxes, labels), axis=1)
-    people_li = data[data[:,4] == 18]
     pose_li = data[data[:,4] < 18]
     pose_data = np.zeros((len(pose_li), 3))
     pose_data[:,0] = (pose_li[:,0] + pose_li[:,2]) / 2
@@ -25,8 +26,40 @@ def get_people_pose(boxes, labels):
     pose_data[:,2] = pose_li[:,4]
 
     people_body_li=[]
+
+    pose_dict = {}
+
+    body_li = pose_data[pose_data[:, 0] > base_rect[0][0]]
+    body_li = body_li[body_li[:, 1] > base_rect[0][1]]
+    body_li = body_li[body_li[:, 0] < base_rect[1][0]]
+    body_li = body_li[body_li[:, 1] < base_rect[1][1]]
+
+    for j in range(len(body_li)):
+        if body_li[j,2] not in list(pose_dict.keys()):
+            pose_dict[int(body_li[j,2])] = (int(body_li[j,0]), int(body_li[j,1]))
+    l_li=[i for i in range(18) if i not in list(pose_dict.keys())]
+    for l_item in l_li:
+        pose_dict[l_item] = (0,0)
+    pose_dict = sorted(pose_dict.items())
+    people_body_li.append(pose_dict)
+
+    return people_body_li
+
+
+def get_multi_people_pose(boxes, labels):
+    labels = np.reshape(labels, (len(labels), 1))
+    data = np.concatenate((boxes, labels), axis=1)
+    people_li = data[data[:, 4] == 18]
+    pose_li = data[data[:, 4] < 18]
+    pose_data = np.zeros((len(pose_li), 3))
+    pose_data[:, 0] = (pose_li[:, 0] + pose_li[:, 2]) / 2
+    pose_data[:, 1] = (pose_li[:, 1] + pose_li[:, 3]) / 2
+    pose_data[:, 2] = pose_li[:, 4]
+
+    people_body_li = []
     for i in range(len(people_li)):
         pose_dict = {}
+
         bound = 5
         body_li = pose_data[pose_data[:, 0] > people_li[i, 0] + bound]
         body_li = body_li[body_li[:, 1] > people_li[i, 1] + bound]
@@ -34,17 +67,15 @@ def get_people_pose(boxes, labels):
         body_li = body_li[body_li[:, 1] < people_li[i, 3] - bound]
 
         for j in range(len(body_li)):
-            if body_li[j,2] not in list(pose_dict.keys()):
-                pose_dict[int(body_li[j,2])] = (int(body_li[j,0]), int(body_li[j,1]))
-        l_li=[i for i in range(18) if i not in list(pose_dict.keys())]
+            if body_li[j, 2] not in list(pose_dict.keys()):
+                pose_dict[int(body_li[j, 2])] = (int(body_li[j, 0]), int(body_li[j, 1]))
+        l_li = [i for i in range(18) if i not in list(pose_dict.keys())]
         for l_item in l_li:
-            pose_dict[l_item] = (0,0)
+            pose_dict[l_item] = (0, 0)
         pose_dict = sorted(pose_dict.items())
         people_body_li.append(pose_dict)
 
     return people_body_li
-    
-
 
 def draw_arm(img, pose_dict, line_color, side, w):
     draw = ImageDraw.Draw(img)
@@ -168,8 +199,9 @@ def draw_ground_truth(img_ori, trainer_pose):
     img = Image.fromarray(img_ori)
     draw = ImageDraw.Draw(img)
     line_color = (145, 56, 40)
-    w = 5
+    w = 5; r=20
 
+    draw.ellipse((trainer_pose[0] - r, trainer_pose[1] - r, trainer_pose[0] + r, trainer_pose[1] + r), fill=line_color)
     draw.line((trainer_pose[0], trainer_pose[1], trainer_pose[2], trainer_pose[3]), fill=line_color, width=w)
     draw.line((trainer_pose[2], trainer_pose[3], trainer_pose[4], trainer_pose[5]), fill=line_color, width=w)
     draw.line((trainer_pose[4], trainer_pose[5], trainer_pose[6], trainer_pose[7]), fill=line_color, width=w)
@@ -186,8 +218,9 @@ def draw_truth(img_ori, trainer_pose):
     img = Image.fromarray(img_ori)
     draw = ImageDraw.Draw(img)
     line_color = (0, 0, 255)
-    w = 5
+    w = 5; r= 20
 
+    draw.ellipse((trainer_pose[0] - r, trainer_pose[1] - r, trainer_pose[0] + r, trainer_pose[1] + r), fill=line_color)
     draw.line((trainer_pose[0], trainer_pose[1], trainer_pose[2], trainer_pose[3]), fill=line_color, width=w)
     draw.line((trainer_pose[2], trainer_pose[3], trainer_pose[4], trainer_pose[5]), fill=line_color, width=w)
     draw.line((trainer_pose[4], trainer_pose[5], trainer_pose[6], trainer_pose[7]), fill=line_color, width=w)

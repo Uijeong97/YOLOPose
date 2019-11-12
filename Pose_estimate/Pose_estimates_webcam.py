@@ -138,7 +138,7 @@ with tf.Session() as sess:
             continue
         elif startTrig == 1:
             img_ori = draw_ground_truth(img_ori, pca_df.iloc[0, :].values)
-            cv2.putText(img_ori, str(int(cntdown/30)), (100,300), cv2.FONT_HERSHEY_SIMPLEX, 10, (255,0,0), 10)
+            cv2.putText(img_ori, str(int(cntdown/30)), (120,280), cv2.FONT_HERSHEY_SIMPLEX, 7, (255,0,0), 15)
             cv2.imshow('image', img_ori)
             cntdown -= 1
             if cntdown == 0:

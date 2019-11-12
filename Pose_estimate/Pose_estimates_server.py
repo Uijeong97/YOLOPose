@@ -205,6 +205,7 @@ def estimatePose():
                 break
 
         vid.release()
+        cv2.destroyAllWindows()
         if args.save_video:
             videoWriter.release()
 

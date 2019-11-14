@@ -211,5 +211,6 @@ def estimatePose():
 
     f = open('./data/score/result.csv', 'a', encoding='utf-8', newline='')
     wr = csv.writer(f)
-    now = datetime.today().strftime("%Y/%m/%d %H:%M:%S")
-    wr.writerow([now, c_knee, c_waist, c_speed])
+    date = datetime.today().strftime("%Y/%m/%d")
+    time = datetime.today().strftime("%H:%M:%S")
+    wr.writerow([date,time, c_knee, c_waist, c_speed])

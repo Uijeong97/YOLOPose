@@ -80,7 +80,7 @@ scikit-learn : 0.21.3
 ```
 
 ### Weigths Download
-The pretrained pose weights file can be downloaded [here](https://drive.google.com/open?id=1mBKWp90YHH-3pzIWzSWKovGqdzKOtNuj). Place this weights file under directory `./data/pose_weights/`
+The pretrained pose weights file can be downloaded [here](https://drive.google.com/open?id=1woW9tKJcJKzPOPX7yLpNihNKT_-aWRrB). Place this weights file under directory `./data/pose_weights/`
 
 
 ### Reference

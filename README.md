@@ -34,7 +34,7 @@
 
 ### Demo Command
 ```
-python Pose_estimates.py
+python main.py
 ```
 
 ### Pose estimate Result

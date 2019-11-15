@@ -29,7 +29,7 @@
 
 ## Demo
 <p align="center">
-  <img src="images/demo.gif">
+  <img src="images/PTpose.gif">
 </p>
 
 ### Demo Command
@@ -51,13 +51,18 @@ python Pose_estimates.py
 </p>
 
 ### Todo List
-- sound feedback
+- [] sound feedback
+- [] Torso normalization
+- [] Upgrade UI/UX
 
 ### Done List
 
 - [x] Train COCO Human data
 - [x] Make scoring pose algorithm
-- [x] Test YOLOv3 with EfficientNet
+- [x] Make base UI/UX
+- [x] Denote scores
+- [x] Make ground truth skeleton
+- [x] Make pose estimation model
 - [x] Email to Stanford Univ Student to get dataset
 
 ## Information
@@ -66,8 +71,12 @@ python Pose_estimates.py
 Python : 3.7
 Tensorflow : 1.8.0
 Opencv : 3.4.2
-Pillow : 6.1.0
+Pillow : 6.0.0
 Pandas : 0.25.0
+Matplotlib : 3.1.0
+Numpy : 1.16.4
+pygame : 1.9.6
+scikit-learn : 0.21.3
 ```
 
 ### Weigths Download

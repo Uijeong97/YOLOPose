@@ -18,7 +18,9 @@
 어디서든 편하게 운동할 수 있으며 개개인에게 맞춤형 피드백을 제공하는 딥러닝을 활용한 모바일헬스 서비스를 제작한다.
 
 ### System Architecture
-<img src="images/SystemArchitecture.png", width="1024">
+<p align="center">
+  <img src="images/SystemArchitecture.PNG", width="1024">
+</p>
 
 ### Features
 - Pose Estimate using Object Detection
@@ -26,7 +28,9 @@
 - Providing cumulative score for increasing Engage
 
 ## Demo
-<img src="images/demo.gif">
+<p align="center">
+  <img src="images/demo.gif">
+</p>
 
 ### Demo Command
 ```
@@ -37,10 +41,14 @@ python Pose_estimates.py
 ![](https://github.com/comojin1994/YOLOPose/blob/master/Pose_estimate/detection_result.jpg?raw=true)
 
 ### Feedback
-<img src="images/feedback.PNG">
+<p align="left">
+  <img src="images/feedback.PNG", width="700">
+</p>
 
 ### Score record
-<img src="images/record.PNG">
+<p align="left">
+  <img src="images/record.PNG", width="500">
+</p>
 
 ### Todo List
 - sound feedback

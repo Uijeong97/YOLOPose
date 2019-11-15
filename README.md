@@ -1,6 +1,7 @@
-# 동국대학교 빅데이터팜 결과전시회
+# :muscle: 2019 SW Festival Home PT :muscle:
+딥러닝을 활용한 홈짐 트레이닝 서비스
 
-﻿## Dongguk Univ BigData Farm
+## Dongguk Univ BigData Farm
 
 ### 팀원
 
@@ -12,8 +13,47 @@
 
 - 채진영
 
-### Version
+## SW
+### Purpose
+어디서든 편하게 운동할 수 있으며 개개인에게 맞춤형 피드백을 제공하는 딥러닝을 활용한 모바일헬스 서비스를 제작한다.
 
+### System Architecture
+<img src="images/SystemArchitecture.png", width="1024">
+
+### Features
+- Pose Estimate using Object Detection
+- Feedback SPEED, POSTURE(knee, wrist)
+- Providing cumulative score for increasing Engage
+
+## Demo
+<img src="images/demo.gif">
+
+### Demo Command
+```
+python Pose_estimates.py
+```
+
+### Pose estimate Result
+![](https://github.com/comojin1994/YOLOPose/blob/master/Pose_estimate/detection_result.jpg?raw=true)
+
+### Feedback
+<img src="images/feedback.PNG">
+
+### Score record
+<img src="images/record.PNG">
+
+### Todo List
+- sound feedback
+
+### Done List
+
+- [x] Train COCO Human data
+- [x] Make scoring pose algorithm
+- [x] Test YOLOv3 with EfficientNet
+- [x] Email to Stanford Univ Student to get dataset
+
+## Information
+### Version
 ```
 Python : 3.7
 Tensorflow : 1.8.0
@@ -22,26 +62,16 @@ Pillow : 6.1.0
 Pandas : 0.25.0
 ```
 
-### Todo
-
-- [x] Train COCO Human data
-- [x] Make scoring pose algorithm
-- [x] Test YOLOv3 with EfficientNet
-- [x] Email to Stanford Univ Student to get dataset
-
 ### Weigths Download
 The pretrained pose weights file can be downloaded [here](https://drive.google.com/open?id=1mBKWp90YHH-3pzIWzSWKovGqdzKOtNuj). Place this weights file under directory `./data/pose_weights/`
 
-### Running Demo
-```
-python Pose_estimates.py
-```
-result:
-
-![](https://github.com/comojin1994/YOLOPose/blob/master/Pose_estimate/detection_result.jpg?raw=true)
 
 ### Reference
 
 - https://github.com/zzh8829/yolov3-tf2
 
 - https://github.com/ZackPashkin/YOLOv3-EfficientNet-EffYolo
+
+
+
+

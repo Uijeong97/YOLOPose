@@ -29,7 +29,7 @@
 
 ## Demo
 <p align="center">
-  <img src="images/PTpose.gif">
+  <img src="images/PTPose.gif">
 </p>
 
 ### Demo Command

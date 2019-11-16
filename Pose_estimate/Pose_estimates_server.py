@@ -17,7 +17,7 @@ from utils.nms_utils import gpu_nms
 from utils.plot_utils import get_color_table
 from utils.plot_utils import plot_one_box
 from utils.data_aug import letterbox_resize, makeMypose_df
-from utils.pose_ftns import draw_body, get_people_pose, isStart, draw_ground_truth, draw_truth
+from utils.pose_ftns import draw_body, get_people_pose, isStart, isInBox, draw_ground_truth, draw_truth
 from algo.posture_dist import check_waist, check_knee, feedback_waist, check_ankle
 from algo.speed_dist import check_speed
 from sklearn.decomposition import PCA
@@ -50,7 +50,8 @@ def estimatePose():
     color_table = get_color_table(args.num_class)
 
     # vid = cv2.VideoCapture(args.input_video)
-    vid = cv2.VideoCapture('./data/demo/lunge_02.mp4')
+    # vid = cv2.VideoCapture('./data/demo/lunge_02.mp4')
+    vid = cv2.VideoCapture(r'C:\Users\soma\SMART_Referee\SMART_Referee_DL\data\lunge\video\lunge_03.mp4')
     video_frame_cnt = int(vid.get(7))
     video_width = int(vid.get(3))
     video_height = int(vid.get(4))
@@ -135,13 +136,16 @@ def estimatePose():
             elif startTrig == 0:  # start
                 # 기준 박스
                 cv2.rectangle(img_ori, base_rect[0], base_rect[1], (0, 0, 255), 2)
-
-                img_ori = draw_ground_truth(img_ori, pca_df.iloc[0, :].values)
-                startTrig = isStart(people_pose, trainer_pose.iloc[0, 1:].values, size)
-                cv2.imshow('image', img_ori)
-                if cv2.waitKey(1) & 0xFF == ord('q'):
-                    break
-                continue
+                if isInBox(people_pose, base_rect[0], base_rect[1]):
+                    img_ori = draw_ground_truth(img_ori, pca_df.iloc[0, :].values)
+                    startTrig = isStart(people_pose, trainer_pose.iloc[0, 1:].values, size)
+                    cv2.imshow('image', img_ori)
+                    if cv2.waitKey(1) & 0xFF == ord('q'):
+                        break
+                    continue
+                else:
+                    print("박스안에 들어와주세요!!")
+                    continue
             elif startTrig == 1:
                 img_ori = draw_ground_truth(img_ori, pca_df.iloc[0, :].values)
                 cv2.putText(img_ori, str(int(cntdown / 30)), (100, 300), cv2.FONT_HERSHEY_SIMPLEX, 10, (255, 0, 0), 10)
@@ -211,6 +215,6 @@ def estimatePose():
 
     f = open('./data/score/result.csv', 'a', encoding='utf-8', newline='')
     wr = csv.writer(f)
-    date = datetime.today().strftime("%Y/%m/%d")
-    time = datetime.today().strftime("%H:%M:%S")
-    wr.writerow([date,time, c_knee, c_waist, c_speed])
+    d = datetime.today().strftime("%Y/%m/%d")
+    t = datetime.today().strftime("%H:%M:%S")
+    wr.writerow([d,t, c_knee, c_waist, c_speed])

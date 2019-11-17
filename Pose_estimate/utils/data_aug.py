@@ -8,10 +8,24 @@ import pandas as pd
 import random
 import numpy as np
 import cv2
+def resize_pose(t_pose, my_pose):
+    t_p = t_pose[:14]
+    t_p[8],t_p[9] = t_p[2],t_p[3]
+
+    val_t = [np.sqrt(sum(v**2)) for v in t_pose[2:].reshape(7,2)-t_p.reshape(7,2)]
+
+    m_p=my_pose[:14]
+    m_p[8],m_p[9]=m_p[2],m_p[3]
+    m_p=my_pose[2:]-m_p
+    m_p = m_p.reshape(7, 2)
+
+
+    return t_pose
 
 
 def makeMypose_df(list_p):
     df = pd.DataFrame(data=np.array(list_p))
+
     # df = df.loc[:,[1,2,3,4,17,18,19,20,21,22,23,24,25,26,27,28]]
     # df = df.replace(0,np.nan).fillna(method = "ffill")
     return df

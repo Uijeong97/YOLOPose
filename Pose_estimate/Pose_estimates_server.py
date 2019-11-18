@@ -137,8 +137,8 @@ def estimatePose():
                 # 기준 박스
                 cv2.rectangle(img_ori, base_rect[0], base_rect[1], (0, 0, 255), 2)
                 if isInBox(people_pose, base_rect[0], base_rect[1]):
-                    img_ori = draw_ground_truth(img_ori, pca_df.iloc[0, :].values)
                     t_resize_pose = resize_pose(people_pose, trainer_pose.iloc[0, 1:].values)
+                    img_ori = draw_ground_truth(img_ori, t_resize_pose)
                     startTrig = isStart(people_pose, trainer_pose.iloc[0, 1:].values, size)
 
                     cv2.imshow('image', img_ori)

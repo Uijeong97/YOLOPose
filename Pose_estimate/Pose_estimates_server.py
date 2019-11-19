@@ -50,7 +50,7 @@ def estimatePose():
     color_table = get_color_table(args.num_class)
 
     # vid = cv2.VideoCapture(args.input_video)
-    vid = cv2.VideoCapture('./data/demo/lunge_02.mp4')
+    vid = cv2.VideoCapture('./data/demo/lunge_03.mp4')
     # vid = cv2.VideoCapture(r'C:\Users\soma\SMART_Referee\SMART_Referee_DL\data\lunge\video\lunge_03.mp4')
     video_frame_cnt = int(vid.get(7))
     video_width = int(vid.get(3))
@@ -137,8 +137,10 @@ def estimatePose():
                 # 기준 박스
                 cv2.rectangle(img_ori, base_rect[0], base_rect[1], (0, 0, 255), 2)
                 if isInBox(people_pose, base_rect[0], base_rect[1]):
-                    t_resize_pose = resize_pose(people_pose, trainer_pose.iloc[0, 1:].values)
+                    # t_resize_pose = resize_pose(people_pose, trainer_pose.iloc[0, 1:].values)
+                    t_resize_pose = resize_pose(people_pose, pca_df.iloc[0, :].values)
                     img_ori = draw_ground_truth(img_ori, t_resize_pose)
+                    # img_ori = draw_ground_truth(img_ori, pca_df.iloc[0, :].values)
                     startTrig = isStart(people_pose, trainer_pose.iloc[0, 1:].values, size)
 
                     cv2.imshow('image', img_ori)
@@ -210,6 +212,7 @@ def estimatePose():
             if args.save_video:
                 videoWriter.write(img_ori)
             if cv2.waitKey(1) & 0xFF == ord('q'):
+                cv2.destroyAllWindows()
                 break
 
         vid.release()

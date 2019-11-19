@@ -6,12 +6,44 @@ from __future__ import division, print_function
 
 import pandas as pd
 import random
+import copy
 import numpy as np
 import cv2
+def resize_pose(my_pose, t_pose):
+    t_p = copy.deepcopy(t_pose[:14])
+    t_p[8],t_p[9] = t_p[2],t_p[3]
+    vec_t = [v/np.sqrt(sum(v**2)) for v in t_pose[2:].reshape(7,2)-t_p.reshape(7,2)]
+
+    m_p = copy.deepcopy(my_pose[:14])
+    m_p[8],m_p[9]=m_p[2],m_p[3]
+    scalar_m = [np.sqrt(sum(v**2)) for v in my_pose[2:].reshape(7,2)-m_p.reshape(7,2)]
+
+    vec_fit = [vec_t[i] * scalar_m[i] for i in range(7)]
+
+    point_y = my_pose[9] - vec_fit[0][1] - vec_fit[1][1] - vec_fit[2][1] - vec_fit[3][1]
+    point_x = my_pose[0]
+
+    t_fix_pose = [np.array([point_x, point_y])]
+    tmp = np.array([point_x+vec_fit[0][0], point_y+vec_fit[0][1]])
+    t_fix_pose.append(tmp.tolist())
+
+    for i in range(1,4):
+        tmp+=np.array([vec_fit[i][0], vec_fit[i][1]])
+        t_fix_pose.append(tmp.tolist())
+
+    tmp=np.array([point_x+vec_fit[0][0], point_y+vec_fit[0][1]])
+
+    for i in range(1,4):
+        tmp+=np.array([vec_fit[i+3][0], vec_fit[i+3][1]])
+        t_fix_pose.append(tmp.tolist())
+    t_fix_pose=np.array(t_fix_pose).flatten().astype(int)
+    # print(t_fix_pose)
+    return t_fix_pose
 
 
 def makeMypose_df(list_p):
     df = pd.DataFrame(data=np.array(list_p))
+
     # df = df.loc[:,[1,2,3,4,17,18,19,20,21,22,23,24,25,26,27,28]]
     # df = df.replace(0,np.nan).fillna(method = "ffill")
     return df

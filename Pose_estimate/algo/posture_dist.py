@@ -1,10 +1,10 @@
 def check_waist(people_pose):
     Neck = people_pose[2:4]
-    RHeap,LHeap = people_pose[4:6],people_pose[10:12]
+    RHip,LHip = people_pose[4:6],people_pose[10:12]
 
-    MHeap = ((RHeap[0]+LHeap[0])/2, (RHeap[1]+LHeap[1])/2)
+    MHip = ((RHip[0]+LHip[0])/2, (RHip[1]+LHip[1])/2)
 
-    if abs(MHeap[0] - Neck[0]) >= 21.5:
+    if abs(MHip[0] - Neck[0]) >= 21.5:
         return True
     else:
         return False

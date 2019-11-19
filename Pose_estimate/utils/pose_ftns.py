@@ -4,13 +4,26 @@ import cv2
 
 from PIL import Image, ImageDraw
 
+def isInBox(people_pose, box_1, box_2):
+    evenidx = [0, 2, 4, 6, 8, 10, 12, 14]
+    oddidx = [1, 3, 5, 7, 8, 11, 13, 15]
+    T_p = (len([True for d in people_pose[evenidx] if box_1[0] < d & d < box_2[0]])+\
+    len([True if box_1[1] < d & d < box_2[1] else False for d in people_pose[oddidx]]))/16
+
+    if T_p >= 0.8:
+        return True
+    else:
+        return False
+
 def isStart(people_pose, trainer_pose, size):
+
     # if people_pose
     mse = ((people_pose - trainer_pose)**2).mean(axis = 0)
     mse = np.sqrt(mse)
 
     t = min(size)/40
     if mse > t:
+        print("자세를 맞춰주세요!!")
         return 0
     else:
         return 1

@@ -47,7 +47,7 @@ python main.py
 
 ### Score record
 <p align="left">
-  <img src="images/record.PNG", width="500">
+  <img src="images/record.png", width="500">
 </p>
 
 ### Todo List
